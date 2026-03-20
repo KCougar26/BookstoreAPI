@@ -1,0 +1,26 @@
+# --- .NET / Rider / Visual Studio ---
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.userosscache
+*.sln.docstates
+*.xml
+# Optional: Ignore the actual DB if you want the TA to use their own
+# Bookstore.sqlite
+
+# --- React / Node / Vite ---
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Operating System ---
+.DS_Store
+Thumbs.db
