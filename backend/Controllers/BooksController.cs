@@ -17,22 +17,33 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetBooks(int pageNum = 1, int pageSize = 5, string sortBy = "title")
+    public IActionResult Get(int pageNum = 1, int pageSize = 5, string? sortBy = "title", string? category = null)
     {
         var query = _context.Books.AsQueryable();
 
-        // Dynamically choose how to sort based on the user's click
-        if (sortBy.ToLower() == "author") {
-            query = query.OrderBy(b => b.Author);
-        } else {
-            query = query.OrderBy(b => b.Title); // Default to title
+        // 1. Apply Category Filter first
+        if (!string.IsNullOrEmpty(category))
+        {
+            query = query.Where(x => x.Category == category);
         }
 
-        var books = await query
+        // 2. Apply the Sort (This is the missing piece!)
+        if (sortBy?.ToLower() == "author")
+        {
+            query = query.OrderBy(x => x.Author);
+        }
+        else
+        {
+            query = query.OrderBy(x => x.Title); // Default sort
+        }
+
+        // 3. Apply Pagination
+        var totalItems = query.Count();
+        var books = query
             .Skip((pageNum - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync();
+            .ToList();
 
-        return Ok(new { books, totalCount = await _context.Books.CountAsync() });
+        return Ok(new { books, totalItems });
     }
 }
