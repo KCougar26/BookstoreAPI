@@ -17,7 +17,7 @@ interface Book {
 const BookList = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(5); 
+  const [pageSize] = useState(5); 
   const [sortBy, setSortBy] = useState("title");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,7 +27,7 @@ const BookList = () => {
   const categories = ["Biography", "Business", "Children", "Fiction", "Historical", "Non-Fiction", "Self-Help"];
 
   useEffect(() => {
-    fetch(`http://localhost:5003/api/books?pageNum=${pageNum}&pageSize=${pageSize}&sortBy=${sortBy}&category=${selectedCategory || ''}`)
+    fetch(`${(import.meta as any).env.VITE_API_URL}/books?pageNum=${pageNum}&pageSize=${pageSize}&sortBy=${sortBy}&category=${selectedCategory || ''}`)
         .then(response => response.json())
         .then((data: { books: Book[], totalItems: number }) => {
             setBooks(data.books);
@@ -90,7 +90,7 @@ const BookList = () => {
                 ) : (
                   <p className="card-text text-muted">Your cart is currently empty.</p>
                 )}
-                
+
                 <Link className="btn btn-outline-primary btn-sm w-100" to="/cart">
                   View Cart
                 </Link>
