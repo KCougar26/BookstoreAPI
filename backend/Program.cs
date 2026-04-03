@@ -8,7 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); 
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("BookConnection");
+// 1. Get the base directory where the app is running
+var path = AppContext.BaseDirectory;
+
+// 2. Build the connection string using an absolute path 
+// (Make sure "Bookstore.sqlite" matches your filename EXACTLY)
+var connectionString = $"Data Source={Path.Combine(path, "Bookstore.sqlite")}";
+
 builder.Services.AddDbContext<BookstoreContext>(options =>
     options.UseSqlite(connectionString));
 
