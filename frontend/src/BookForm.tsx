@@ -39,26 +39,32 @@ const BookForm = () => {
   }, [id, API_BASE_URL]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // 3. Update the submission URLs
-    const method = id ? 'PUT' : 'POST';
-    const url = id ? `${API_BASE_URL}/books/${id}` : `${API_BASE_URL}/books`;
+        e.preventDefault();
+        
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_BASE_URL}/books/${id}` : `${API_BASE_URL}/books`;
 
-    fetch(url, {
-      method: method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(book)
-    })
-    .then(res => {
-        if (res.ok) {
+        // CRITICAL FIX: Ensure the book object has the numeric ID before sending
+        const payload = id ? { ...book, bookID: parseInt(id) } : book;
+
+        console.log("Sending payload:", payload); // Check your console to see what is being sent!
+
+        fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload) // Send the payload with the ID
+        })
+        .then(res => {
+            if (res.ok) {
             navigate('/adminbooks');
-        } else {
-            alert("Save failed. Check the console for details.");
-        }
-    })
-    .catch(err => console.error("Submit error:", err));
-  };
+            } else {
+            // This will help us see WHY the 400 happened
+            res.text().then(text => console.error("Server Error Detail:", text));
+            alert("Save failed (400 Bad Request). Check console for details.");
+            }
+        })
+        .catch(err => console.error("Submit error:", err));
+    };
 
   return (
     <div className="container mt-4">
