@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 import { useEffect, useState } from 'react';
 import { useCart } from '../CartContext';
 import { Link } from 'react-router-dom';
@@ -27,7 +29,7 @@ const BookList = () => {
   const categories = ["Biography", "Business", "Children", "Fiction", "Historical", "Non-Fiction", "Self-Help"];
 
   useEffect(() => {
-    fetch(`${(import.meta as any).env.VITE_API_URL}/books?pageNum=${pageNum}&pageSize=${pageSize}&sortBy=${sortBy}&category=${selectedCategory || ''}`)
+    fetch(`${import.meta.env.VITE_API_URL}/books?pageNum=${pageNum}&pageSize=${pageSize}&sortBy=${sortBy}&category=${selectedCategory || ''}`)
         .then(response => response.json())
         .then((data: { books: Book[], totalItems: number }) => {
             setBooks(data.books);
