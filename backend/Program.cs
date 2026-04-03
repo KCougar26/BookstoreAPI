@@ -13,7 +13,8 @@ var path = AppContext.BaseDirectory;
 
 // 2. Build the connection string using an absolute path 
 // (Make sure "Bookstore.sqlite" matches your filename EXACTLY)
-var connectionString = $"Data Source={Path.Combine(path, "Bookstore.sqlite")}";
+// Use the exact name from your publish folder: Bookstore.sqlite
+var connectionString = "Data Source=/home/site/wwwroot/Bookstore.sqlite";
 
 builder.Services.AddDbContext<BookstoreContext>(options =>
     options.UseSqlite(connectionString));
