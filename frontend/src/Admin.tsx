@@ -11,10 +11,9 @@ interface Book {
 
 const Admin = () => {
   const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Get the API URL from environment variables
   const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -23,14 +22,13 @@ const Admin = () => {
 
   const fetchBooks = () => {
     setLoading(true);
-    // Use the dynamic URL instead of localhost
     fetch(`${API_BASE_URL}/books?pageSize=100`) 
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch admin books");
         return res.json();
       })
       .then(data => {
-        setBooks(data.books || []); // Ensure we handle the .books wrapper
+        setBooks(data.books || []);
         setLoading(false);
       })
       .catch(err => {
@@ -41,11 +39,10 @@ const Admin = () => {
 
   const handleDelete = (id: number) => {
     if (window.confirm("Are you sure you want to delete this book?")) {
-      // Use the dynamic URL for deletion too
       fetch(`${API_BASE_URL}/books/${id}`, { method: 'DELETE' })
         .then(res => {
           if (res.ok) {
-            fetchBooks(); // Refresh list after successful deletion
+            fetchBooks();
           } else {
             alert("Failed to delete the book.");
           }
@@ -55,9 +52,15 @@ const Admin = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4"> {/* This is the parent container that was missing */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="display-5">Admin Panel</h1>
+        <div>
+          <h1 className="display-5">Admin Panel</h1>
+          <button className="btn btn-outline-secondary btn-sm" onClick={() => navigate('/')}>
+            &larr; Back to Bookstore
+          </button>
+        </div>
+        
         <button className="btn btn-primary shadow-sm" onClick={() => navigate('/admin/add')}>
           + Add New Book
         </button>
