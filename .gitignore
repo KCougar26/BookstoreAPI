@@ -15,11 +15,13 @@ node_modules/
 dist/
 dist-ssr/
 *.local
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+
+# We are commenting these out so GitHub can see your API URL
+# .env
+# .env.local
+# .env.development.local
+# .env.test.local
+# .env.production.local
 
 # --- Operating System ---
 .DS_Store
