@@ -29,8 +29,16 @@ const BookList = () => {
   const categories = ["Biography", "Business", "Children", "Fiction", "Historical", "Non-Fiction", "Self-Help"];
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/books?pageNum=${pageNum}&pageSize=${pageSize}&sortBy=${sortBy}&category=${selectedCategory || ''}`)
-        .then(response => response.json())
+    const apiUrl = import.meta.env.VITE_API_URL;
+    console.log("Checking API URL:", apiUrl); // This will show in your console!
+
+    fetch(`${apiUrl}/books?pageNum=${pageNum}&pageSize=${pageSize}&sortBy=${sortBy}&category=${selectedCategory || ''}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data: { books: Book[], totalItems: number }) => {
             setBooks(data.books);
             setTotalPages(Math.ceil(data.totalItems / pageSize)); 
