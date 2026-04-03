@@ -1,34 +1,39 @@
 using Microsoft.EntityFrameworkCore;
 using BookstoreAPI.Data;
 using BookstoreAPI.Models;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers(); 
-builder.Services.AddOpenApi();
-
-// 1. Get the base directory where the app is running
+// --- DATABASE CONFIGURATION ---
+// 1. Get the folder where the application is actually running
 var path = AppContext.BaseDirectory;
 
-// 2. Build the connection string using an absolute path 
-// (Make sure "Bookstore.sqlite" matches your filename EXACTLY)
-// Use the exact name from your publish folder: Bookstore.sqlite
-var connectionString = "Data Source=/home/site/wwwroot/Bookstore.sqlite";
+// 2. Build the absolute path to your database file
+// IMPORTANT: Ensure "Bookstore.sqlite" matches your filename in the publish folder EXACTLY (case-sensitive!)
+var dbPath = Path.Combine(path, "Bookstore.sqlite");
+var connectionString = $"Data Source={dbPath}";
 
+// 3. Register the DbContext using the dynamic connection string
 builder.Services.AddDbContext<BookstoreContext>(options =>
     options.UseSqlite(connectionString));
 
+// --- SERVICES ---
+builder.Services.AddControllers(); 
+builder.Services.AddOpenApi();
+
+// --- CORS CONFIGURATION ---
+// This allows your React frontend to communicate with this API
 builder.Services.AddCors(options => {
-        options.AddPolicy("AllowReact", policy => 
+    options.AddPolicy("AllowReact", policy => 
         policy.AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+              .AllowAnyMethod()
+              .AllowAnyHeader());
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- MIDDLEWARE PIPELINE ---
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -40,7 +45,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Enable CORS before mapping controllers
+// UseCors MUST come before MapControllers
 app.UseCors("AllowReact");
 
 app.MapControllers(); 
