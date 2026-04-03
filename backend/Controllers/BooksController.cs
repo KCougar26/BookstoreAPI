@@ -46,4 +46,39 @@ public class BooksController : ControllerBase
 
         return Ok(new { books, totalItems });
     }
-}
+
+    [HttpPost]
+    public IActionResult Post([FromBody] Book book)
+    {
+        _context.Books.Add(book);
+        _context.SaveChanges();
+        return Ok(book);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult Put(int id, [FromBody] Book book)
+    {
+        if (id != book.BookID)
+        {
+            return BadRequest("ID mismatch");
+        }
+
+        _context.Entry(book).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        _context.SaveChanges();
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var book = _context.Books.Find(id);
+        if (book == null)
+        {
+            return NotFound();
+        }
+
+        _context.Books.Remove(book);
+        _context.SaveChanges();
+        return NoContent();
+    }
+}   

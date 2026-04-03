@@ -90,9 +90,15 @@ const BookList = () => {
                 ) : (
                   <p className="card-text text-muted">Your cart is currently empty.</p>
                 )}
+                
                 <Link className="btn btn-outline-primary btn-sm w-100" to="/cart">
                   View Cart
                 </Link>
+                
+                <Link to="/adminbooks" className="btn btn-dark btn-sm w-100 mt-2">
+                  Admin Management
+                </Link>
+
              </div>
           </div>
         </div>
